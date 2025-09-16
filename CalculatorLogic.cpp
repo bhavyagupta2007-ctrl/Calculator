@@ -65,7 +65,7 @@ int modulus(int a, int b) {
     if (b == 0) throw std::runtime_error("Modulus by zero");
     return a % b;
 }
-double remainder(double a, double b) {
+double remainderValue(double a, double b) {
     if (b == 0) throw std::runtime_error("fmod() by zero");
     return fmod(a, b);
 }
@@ -74,4 +74,5 @@ double remainder(double a, double b) {
 double floorValue(double x) { return floor(x); }
 double ceilValue(double x) { return ceil(x); }
 double roundValue(double x) { return round(x); }
+
 double absolute(double x) { return fabs(x); }
