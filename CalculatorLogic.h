@@ -32,12 +32,13 @@ long long combination(int n, int r);
 
 // Modulus & remainders
 int modulus(int a, int b);
-double remainder(double a, double b);
+double remainderValue(double a, double b);
 
 // Rounding & absolute
 double floorValue(double x);
 double ceilValue(double x);
 double roundValue(double x);
 double absolute(double x);
+
 
 #endif
