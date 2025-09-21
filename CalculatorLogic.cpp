@@ -61,7 +61,7 @@ long long combination(int n, int r) {
 }
 
 // ---------------- Modulus & remainders ----------------
-int modulus(int a, int b) {
+int modulusInt(int a, int b) {
     if (b == 0) throw std::runtime_error("Modulus by zero");
     return a % b;
 }
@@ -76,3 +76,4 @@ double ceilValue(double x) { return ceil(x); }
 double roundValue(double x) { return round(x); }
 
 double absolute(double x) { return fabs(x); }
+
