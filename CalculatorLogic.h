@@ -31,7 +31,7 @@ long long permutation(int n, int r);
 long long combination(int n, int r);
 
 // Modulus & remainders
-int modulus(int a, int b);
+int modulusInt(int a, int b);
 double remainderValue(double a, double b);
 
 // Rounding & absolute
@@ -42,3 +42,4 @@ double absolute(double x);
 
 
 #endif
+
