@@ -2,6 +2,7 @@
 #include <cmath>
 #include <stdexcept>
 
+extern "C" {
 // ---------------- Basic arithmetic ----------------
 double add(double a, double b) { return a + b; }
 double subtract(double a, double b) { return a - b; }
@@ -76,4 +77,8 @@ double ceilValue(double x) { return ceil(x); }
 double roundValue(double x) { return round(x); }
 
 double absolute(double x) { return fabs(x); }
+
+}
+
+
 
