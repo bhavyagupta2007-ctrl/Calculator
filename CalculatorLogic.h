@@ -1,6 +1,7 @@
 #ifndef CALCULATORLOGIC_H
 #define CALCULATORLOGIC_H
 
+extern "C" {
 // Basic arithmetic
 double add(double a, double b);
 double subtract(double a, double b);
@@ -40,6 +41,7 @@ double ceilValue(double x);
 double roundValue(double x);
 double absolute(double x);
 
-
+}
 #endif
+
 
