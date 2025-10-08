@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scientific Calculator (C++ + WebAssembly)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    input {
+      padding: 8px;
+      margin: 5px;
+      width: 200px;
+      font-size: 16px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      background: #0078d7;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005fa3;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    #result {
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Scientific Calculator</h1>
+  
+  <input id="a" type="number" placeholder="Enter first number">
+  <input id="b" type="number" placeholder="Enter second number">
+
+  <br><br>
+  <!-- Basic Operations -->
+  <button onclick="showResult(add)">Add</button>
+  <button onclick="showResult(subtract)">Subtract</button>
+  <button onclick="showResult(multiply)">Multiply</button>
+  <button onclick="showResult(divide)">Divide</button>
+  <button onclick="showResult(power)">Power</button>
+  <button onclick="showResult(squareRoot)">Square Root (A)</button>
+
+  <br><br>
+  <!-- Advanced Functions -->
+  <button onclick="showResult(sine)">sin(A)</button>
+  <button onclick="showResult(cosine)">cos(A)</button>
+  <button onclick="showResult(tangent)">tan(A)</button>
+  <button onclick="showResult(arcsine)">asin(A)</button>
+  <button onclick="showResult(arccosine)">acos(A)</button>
+  <button onclick="showResult(arctangent)">atan(A)</button>
+
+  <br><br>
+  <button onclick="showResult(naturalLog)">ln(A)</button>
+  <button onclick="showResult(logBase10)">log10(A)</button>
+  <button onclick="showResult(exponential)">exp(A)</button>
+  <button onclick="showResult(factorial)">factorial(A)</button>
+  <button onclick="showResult(modulusInt)">mod(A,B)</button>
+  <button onclick="showResult(absolute)">abs(A)</button>
+
+  <h2>Result: <span id="result">---</span></h2>
+
+  <script>
+    // Declare WASM functions
+    let add, subtract, multiply, divide, power, squareRoot;
+    let sine, cosine, tangent, arcsine, arccosine, arctangent;
+    let naturalLog, logBase10, exponential, factorial, modulusInt, absolute;
+
+    var Module = {
+      onRuntimeInitialized: function () {
+        // Bind C++ functions via cwrap
+        add = Module.cwrap("add", "number", ["number", "number"]);
+        subtract = Module.cwrap("subtract", "number", ["number", "number"]);
+        multiply = Module.cwrap("multiply", "number", ["number", "number"]);
+        divide = Module.cwrap("divide", "number", ["number", "number"]);
+        power = Module.cwrap("power", "number", ["number", "number"]);
+        squareRoot = Module.cwrap("squareRoot", "number", ["number"]);
+
+        sine = Module.cwrap("sine", "number", ["number"]);
+        cosine = Module.cwrap("cosine", "number", ["number"]);
+        tangent = Module.cwrap("tangent", "number", ["number"]);
+        arcsine = Module.cwrap("arcsine", "number", ["number"]);
+        arccosine = Module.cwrap("arccosine", "number", ["number"]);
+        arctangent = Module.cwrap("arctangent", "number", ["number"]);
+
+        naturalLog = Module.cwrap("naturalLog", "number", ["number"]);
+        logBase10 = Module.cwrap("logBase10", "number", ["number"]);
+        exponential = Module.cwrap("exponential", "number", ["number"]);
+        factorial = Module.cwrap("factorial", "number", ["number"]);
+        modulusInt = Module.cwrap("modulusInt", "number", ["number", "number"]);
+        absolute = Module.cwrap("absolute", "number", ["number"]);
+
+        console.log("✅ WebAssembly module loaded and all functions bound.");
+      }
+    };
+
+    function degreesToRadians(deg) {
+      return deg * Math.PI / 180;
+    }
+
+    function displayResult(value) {
+      if (Math.abs(value) < 1e-10) return 0; // Treat tiny values as zero
+      return Math.round(value * 1e6) / 1e6; // Round to 6 decimal places
+    }
+
+    function showResult(func) {
+      if (!func) {
+        alert("⚠ Functions not ready yet. Wait a second and try again.");
+        return;
+      }
+
+      let a = parseFloat(document.getElementById("a").value) || 0;
+      let b = parseFloat(document.getElementById("b").value) || 0;
+
+      // For factorial and modulus, ensure integer input
+      if (func === factorial || func === modulusInt) a = Math.floor(a);
+      if (func === modulusInt) b = Math.floor(b);
+
+      try {
+        let rawResult;
+
+        // Trigonometric functions: convert degrees to radians
+        if ([sine, cosine, tangent].includes(func)) {
+          rawResult = func(degreesToRadians(a));
+        } 
+        // Inverse trig: output in degrees
+        else if ([arcsine, arccosine, arctangent].includes(func)) {
+          rawResult = func(a) * 180 / Math.PI;
+        }
+        // Single-input functions
+        else if ([squareRoot, naturalLog, logBase10, exponential, factorial, absolute].includes(func)) {
+          rawResult = func(a);
+        } 
+        // Double-input functions
+        else {
+          rawResult = func(a, b);
+        }
+
+        document.getElementById("result").innerText = displayResult(rawResult);
+      } catch (err) {
+        document.getElementById("result").innerText = "Error: " + err.message;
+      }
+    }
+  </script>
+
+  <!-- Load WebAssembly JS glue -->
+  <script src="Calculator.js"></script>
+</body>
+</html>
